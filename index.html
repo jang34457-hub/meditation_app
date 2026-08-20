@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마음쉼 - 시간대별 맞춤 명상 서비스</title>
+  <meta name="description" content="시간대별 자연 풍경과 함께하는 맞춤 힐링 명상 및 유튜브 플레이어 서비스. 마음을 편안하게 쉬어가세요.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="styles/main.css">
+  <!-- YouTube IFrame API Script -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+</head>
+<body>
+  <!-- Dynamic Background Container -->
+  <div id="bg-overlay" class="bg-overlay"></div>
+  <div id="bg-image-container" class="bg-image-container"></div>
+
+  <!-- Main Application Wrapper -->
+  <div id="app" class="app-container">
+    
+    <!-- Top Header Navigation (Desktop & Mobile) -->
+    <header class="app-header">
+      <div class="logo graphic-logo" title="마음쉼">
+        <svg class="graphic-logo-svg" viewBox="0 0 240 60" width="220" height="55" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!-- 맑은 자연 산림 그라데이션 -->
+            <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ffffff" />
+              <stop offset="45%" stop-color="#a7f3d0" />
+              <stop offset="85%" stop-color="#34d399" />
+              <stop offset="100%" stop-color="#10b981" />
+            </linearGradient>
+            
+            <!-- 오라 글로우 네온 필터 -->
+            <filter id="glow-filter" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          
+          <!-- 그래픽 자연 잎사귀 심볼 모티프 -->
+          <g class="leaf-symbol-group" filter="url(#glow-filter)">
+            <path d="M 22 40 C 8 32, 6 16, 26 10 C 40 18, 38 34, 22 40 Z" fill="url(#logo-grad)" />
+            <path d="M 14 36 C 20 28, 26 22, 34 16" stroke="rgba(16,22,34,0.65)" stroke-width="2.2" stroke-linecap="round" fill="none" />
+            <circle cx="34" cy="14" r="3.5" fill="#6ee7b7" />
+          </g>
+          
+          <!-- 그래픽 타이포그래피 텍스트: "마음쉼" -->
+          <text x="50" y="42" font-family="'Noto Sans KR', 'Outfit', sans-serif" font-weight="900" font-size="34" fill="url(#logo-grad)" filter="url(#glow-filter)" letter-spacing="1.5">마음쉼</text>
+        </svg>
+      </div>
+      
+      <!-- Desktop Navigation Menu -->
+      <nav class="desktop-nav">
+        <button class="nav-item active" data-tab="tab-home">
+          <span class="nav-icon">🌿</span>
+          <span class="nav-label">홈</span>
+        </button>
+        <button class="nav-item" data-tab="tab-meditate">
+          <span class="nav-icon">🧘</span>
+          <span class="nav-label">명상</span>
+        </button>
+        <button class="nav-item" data-tab="tab-history">
+          <span class="nav-icon">📅</span>
+          <span class="nav-label">기록</span>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Main Content Tabs Container -->
+    <main class="content-container">
+      
+      <!-- 1. Home Tab (3 Cards Structure: 1. Intro -> 2. 명상 시작하기 -> 3. 나의 명상 기록) -->
+      <section id="tab-home" class="tab-content active" aria-labelledby="home-tab-heading">
+        <h1 id="home-tab-heading" class="sr-only">마음쉼 홈</h1>
+        
+        <div class="home-three-cards-layout">
+          <!-- Card 1: Intro (시간 등) -->
+          <div class="glass-card home-card intro-card">
+            <div class="card-tag">TIME & GREETING</div>
+            <div class="time-badge" id="current-time-badge">오전 08:30</div>
+            <h2 class="greeting-title" id="greeting-title">🌅 좋은 아침입니다.</h2>
+            <p class="greeting-sub" id="greeting-sub">오늘도 잠시 마음을 편안하게 쉬어가세요.</p>
+          </div>
+
+          <!-- Card 2: 명상 시작하기 -->
+          <div class="glass-card home-card start-meditation-card">
+            <div class="card-header-row">
+              <div class="card-tag">TODAY'S MEDITATION</div>
+              <button id="btn-card-settings" class="card-settings-btn" title="설정 변경하기">
+                ⚙️ 설정
+              </button>
+            </div>
+            <h3 class="rec-title" id="rec-title">마음을 편안하게 하는 호흡 명상</h3>
+            <p class="rec-desc" id="rec-desc">하루를 차분하고 맑은 정신으로 시작해보세요.</p>
+            
+            <div class="rec-meta">
+              <span id="rec-duration" class="meta-item">⏱ 5분</span>
+              <span id="rec-category" class="meta-item">🌬️ 호흡</span>
+            </div>
+
+            <div class="action-row">
+              <button id="btn-home-start-meditation" class="glass-button primary highlight large">
+                ▶ 지금 명상 시작하기
+              </button>
+            </div>
+          </div>
+
+          <!-- Card 3: 나의 명상 기록 -->
+          <div class="glass-card home-card my-records-card">
+            <div class="card-tag">MY MEDITATION HISTORY</div>
+            <div class="history-summary-box">
+              <div class="streak-badge-row">
+                <span class="streak-icon">🔥</span>
+                <span class="streak-count" id="home-streak-count">0일 연속 명상 중</span>
+              </div>
+              <div class="mini-stats-row">
+                <div class="mini-stat-item">
+                  <span class="mini-label">이번 달 횟수</span>
+                  <span class="mini-val" id="home-month-count">0회</span>
+                </div>
+                <div class="mini-stat-item">
+                  <span class="mini-label">총 명상 시간</span>
+                  <span class="mini-val" id="home-total-time">0분</span>
+                </div>
+              </div>
+            </div>
+            <button id="btn-home-go-history" class="glass-button secondary">
+              📅 나의 명상 기록 자세히 보기
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- 2. Meditation Tab -->
+      <section id="tab-meditate" class="tab-content" aria-labelledby="meditate-tab-heading">
+        <h2 id="meditate-tab-heading" class="section-title">🧘 명상 세션</h2>
+        
+        <!-- Setup View (Initial View: 2 Cards) -->
+        <div id="meditate-setup-view" class="meditate-setup-container">
+          <p class="section-sub">원하는 명상 테마와 시간을 선택한 후 아래 버튼을 누르세요.</p>
+
+          <div class="cards-grid meditate-setup-grid">
+            <!-- Card 1: 명상 테마 선택 -->
+            <div class="glass-card category-selection-card">
+              <h3>🏷️ 명상 테마 선택</h3>
+              <div class="category-grid">
+                <button class="category-card active" data-category="호흡" data-ytid="lYJ17n_oUkA">
+                  <span class="cat-icon">🌬️</span>
+                  <span class="cat-name">호흡 명상</span>
+                  <span class="cat-sub">새벽 · 숲 ASMR</span>
+                </button>
+                <button class="category-card" data-category="아침" data-ytid="pywxuQJk3vc">
+                  <span class="cat-icon">🌅</span>
+                  <span class="cat-name">아침 열기</span>
+                  <span class="cat-sub">아침 · 힐링 숲길</span>
+                </button>
+                <button class="category-card" data-category="집중" data-ytid="RtPwBk0pqKE">
+                  <span class="cat-icon">🎯</span>
+                  <span class="cat-name">집중력 향상</span>
+                  <span class="cat-sub">낮 · 피로 이완</span>
+                </button>
+                <button class="category-card" data-category="마음 안정" data-ytid="XTPneQHiGY4">
+                  <span class="cat-icon">🔮</span>
+                  <span class="cat-name">마음 안정</span>
+                  <span class="cat-sub">저녁 · 싱잉볼</span>
+                </button>
+                <button class="category-card" data-category="수면" data-ytid="-bGZS8wr-mU">
+                  <span class="cat-icon">🌙</span>
+                  <span class="cat-name">수면 이완</span>
+                  <span class="cat-sub">밤 · 222Hz 주파수</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Card 2: 명상 시간 선택 및 시작 버튼 -->
+            <!-- Card 2: 명상 시간 선택 카드 (윗칸: 5/10/20분 3개 버튼, 아래칸: 시간 직접 입력 카드) -->
+            <div class="glass-card duration-card">
+              <h3>⏱ 명상 시간 선택</h3>
+              
+              <!-- 윗칸: 5분, 10분, 20분 3개 카드시 버튼 -->
+              <div class="duration-options">
+                <button class="duration-btn active" data-minutes="5">5분</button>
+                <button class="duration-btn" data-minutes="10">10분</button>
+                <button class="duration-btn" data-minutes="20">20분</button>
+              </div>
+
+              <!-- 아래칸: 시간 직접 입력 카드 -->
+              <div class="custom-duration-card">
+                <div class="custom-card-header">
+                  <span class="custom-card-title">✍️ 시간 직접 입력</span>
+                  <span class="custom-card-sub">(5~100분, 5분 단위 조절)</span>
+                </div>
+                <div class="custom-slider-row">
+                  <input type="range" id="custom-minutes-slider" class="range-slider" min="5" max="100" step="5" value="5">
+                  <div class="slider-value-display">
+                    <span id="slider-value-text" class="slider-num">5</span>
+                    <span class="unit-text">분</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="action-box">
+                <button id="btn-start-meditation-session" class="glass-button primary highlight large">
+                  ▶ 선택한 명상 시작하기
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fullscreen Cinema YouTube Player View (Active on Session Start) -->
+        <div id="meditate-player-view" class="full-cinema-view hidden">
+          <div class="glass-card cinema-card">
+            <div class="cinema-header">
+              <span class="cinema-tag">NOW MEDITATING</span>
+              <h3 id="cinema-med-title" class="cinema-med-title">마음 안정 명상 (5분)</h3>
+              <div class="cinema-timer-badge">
+                ⏱ 남은 시간: <span id="cinema-countdown">05:00</span>
+              </div>
+            </div>
+
+            <!-- Fullscreen-like Large Video Player Container -->
+            <div class="cinema-video-wrapper">
+              <div id="youtube-iframe-holder"></div>
+            </div>
+
+            <!-- Control Bar (일시정지/재생, 명상 완료) -->
+            <div class="cinema-controls-bar">
+              <button id="btn-toggle-pause-play" class="glass-button secondary large flex-1">
+                ⏸️ 일시정지
+              </button>
+              <button id="btn-finish-meditation" class="glass-button primary large flex-1">
+                ✓ 명상 완료
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- 3. History & Challenge Tab -->
+      <section id="tab-history" class="tab-content" aria-labelledby="history-tab-heading">
+        <h2 id="history-tab-heading" class="section-title">📅 나의 명상 기록 & 챌린지</h2>
+
+        <!-- Stats Overview Cards -->
+        <div class="stats-grid">
+          <div class="glass-card stat-card">
+            <span class="stat-icon">🧘</span>
+            <div class="stat-value" id="stat-month-count">0회</div>
+            <div class="stat-label">이번 달 명상</div>
+          </div>
+          <div class="glass-card stat-card">
+            <span class="stat-icon">⏱</span>
+            <div class="stat-value" id="stat-total-time">0분</div>
+            <div class="stat-label">총 명상 시간</div>
+          </div>
+          <div class="glass-card stat-card">
+            <span class="stat-icon">🔥</span>
+            <div class="stat-value" id="stat-streak-days">0일</div>
+            <div class="stat-label">연속 명상</div>
+          </div>
+          <div class="glass-card stat-card">
+            <span class="stat-icon">❤️</span>
+            <div class="stat-value" id="stat-fav-category">-</div>
+            <div class="stat-label">최애 카테고리</div>
+          </div>
+        </div>
+
+        <div class="history-dual-layout">
+          <!-- Calendar Component -->
+          <div class="glass-card calendar-card">
+            <div class="calendar-header">
+              <button id="btn-prev-month" class="icon-button" title="이전 달">◀</button>
+              <h3 id="calendar-month-year">2026년 8월</h3>
+              <button id="btn-next-month" class="icon-button" title="다음 달">▶</button>
+            </div>
+            <div class="calendar-days-header">
+              <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+            </div>
+            <div class="calendar-grid" id="calendar-grid">
+              <!-- Dynamically rendered days -->
+            </div>
+          </div>
+
+          <!-- Streak Challenge Badges Card -->
+          <div class="glass-card challenge-section">
+            <h3>🏆 연속 명상 챌린지 배지</h3>
+            <div class="badges-grid" id="badges-container">
+              <!-- Dynamically populated badges -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Settings Tab -->
+      <section id="tab-settings" class="tab-content" aria-labelledby="settings-tab-heading">
+        <h2 id="settings-tab-heading" class="section-title">⚙️ 명상 서비스 환경 설정</h2>
+        <p class="section-sub">선호하는 명상 시간, 오디오 볼륨 및 배경 테마를 설정해보세요. (변경 시 즉시 자동 저장됩니다)</p>
+
+        <div class="glass-card settings-card">
+          <div class="settings-content">
+            <div class="setting-item setting-custom-duration-item">
+              <label>⏱ 기본 명상 선택 시간</label>
+              <div class="custom-duration-card active">
+                <div class="custom-card-header">
+                  <span class="custom-card-title">✍️ 선호 명상 시간 조절</span>
+                  <span class="custom-card-sub">(5~100분, 5분 단위 조절)</span>
+                </div>
+                <div class="custom-slider-row">
+                  <input type="range" id="setting-minutes-slider" class="range-slider" min="5" max="100" step="5" value="5">
+                  <div class="slider-value-display">
+                    <span id="setting-slider-value-text" class="slider-num">5</span>
+                    <span class="unit-text">분</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <label for="tab-setting-theme-override">🌅 배경 시간대 테마 지정</label>
+              <select id="tab-setting-theme-override" class="glass-select">
+                <option value="auto">현재 시간 자동 반영 (기본)</option>
+                <option value="새벽">새벽 (차분한 안개 숲)</option>
+                <option value="아침">아침 (따스한 햇살 숲)</option>
+                <option value="낮">낮 (밝은 숲속 풍경)</option>
+                <option value="저녁">저녁 (잔잔한 노을 호수)</option>
+                <option value="밤">밤 (고요한 밤하늘)</option>
+              </select>
+            </div>
+
+            <div class="setting-item">
+              <label for="tab-setting-sound-volume">🔊 기본 사운드 볼륨</label>
+              <input type="range" id="tab-setting-sound-volume" min="0" max="100" value="80" class="volume-slider">
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Navigation Bar (Mobile) -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-tab="tab-home">
+        <span class="nav-icon">🌿</span>
+        <span class="nav-label">홈</span>
+      </button>
+      <button class="nav-item" data-tab="tab-meditate">
+        <span class="nav-icon">🧘</span>
+        <span class="nav-label">명상</span>
+      </button>
+      <button class="nav-item" data-tab="tab-history">
+        <span class="nav-icon">📅</span>
+        <span class="nav-label">기록</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Session Completion Modal -->
+  <div id="modal-completion" class="modal-overlay hidden">
+    <div class="glass-card modal-box text-center">
+      <div class="completion-icon">🌿</div>
+      <h2>명상을 완료했습니다!</h2>
+      <p class="completion-msg">지친 마음에 차분한 휴식을 되찾았습니다.</p>
+      
+      <div class="completion-stats">
+        <div class="comp-stat-item">
+          <span class="comp-label">오늘의 명상 시간</span>
+          <span id="comp-duration-text" class="comp-value">10분</span>
+        </div>
+        <div class="comp-stat-item">
+          <span class="comp-label">연속 명상 달성</span>
+          <span id="comp-streak-text" class="comp-value">🔥 5일</span>
+        </div>
+      </div>
+
+      <div id="comp-badge-alert" class="badge-alert hidden">
+        🎉 <strong>새로운 챌린지 배지 획득!</strong>
+        <div id="comp-badge-name" class="badge-acquired-name">🌱 3일 연속 명상</div>
+      </div>
+
+      <div class="modal-actions-column">
+        <button id="btn-complete-to-home" class="glass-button primary large">
+          🏠 홈으로 돌아가기
+        </button>
+        <button id="btn-complete-to-history" class="glass-button secondary">
+          📅 상세 기록 확인하기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Date Details Modal -->
+  <div id="modal-date-details" class="modal-overlay hidden">
+    <div class="glass-card modal-box">
+      <div class="modal-header">
+        <h3 id="date-details-title">2026년 8월 20일 기록</h3>
+        <button id="btn-close-date-modal" class="icon-button">✕</button>
+      </div>
+      <div id="date-details-content" class="date-records-list">
+        <!-- Records list populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- JS Modules -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
