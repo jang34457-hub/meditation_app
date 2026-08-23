@@ -129,9 +129,18 @@ html, body {
   transform: scale(1.05);
 }
 
-.graphic-logo-svg {
-  overflow: visible;
-  filter: drop-shadow(0 6px 18px rgba(52, 211, 153, 0.45));
+.logo-image-graphic {
+  height: 60px;
+  width: auto;
+  max-width: 220px;
+  object-fit: contain;
+  border-radius: 12px;
+  filter: drop-shadow(0 0 12px rgba(52, 211, 153, 0.45));
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.graphic-logo:hover .logo-image-graphic {
+  filter: drop-shadow(0 0 20px rgba(110, 231, 183, 0.8));
 }
 
 .leaf-symbol-group {
@@ -350,12 +359,17 @@ html, body {
   border-radius: 8px;
 }
 
-/* 기록 카드 내부 미니 통계 */
+/* 기록 카드 내부 미니 통계 및 버튼 */
+.my-records-card #btn-home-go-history {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
 .history-summary-box {
   background: rgba(0, 0, 0, 0.2);
   padding: 16px;
   border-radius: var(--radius-md);
-  margin-bottom: 20px;
+  margin-bottom: 0;
 }
 
 .streak-badge-row {
